@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
-	linuxproc "github.com/c9s/goprocinfo/linux"
-	ui "github.com/gizak/termui/v3"
-	"github.com/gizak/termui/v3/widgets"
 	"log"
 	"strings"
 	"time"
+
+	linuxproc "github.com/c9s/goprocinfo/linux"
+	ui "github.com/gizak/termui/v3"
+	"github.com/gizak/termui/v3/widgets"
+
 	"topic/pkg"
 )
 
@@ -30,7 +32,7 @@ func genSummary(stat *linuxproc.Stat) []string {
 	totalMem, freeMem, usedMem, cacheMem := pkg.GetTotalMemInMiB()
 	avail := freeMem + cacheMem
 	return []string{
-		fmt.Sprintf("top - %v up %s,  %d users,  load average: %s", currentTime, upTime, pkg.GetUsers(), loadMonitor.GetLoad()),
+		fmt.Sprintf("topic - %v up %s,  %d users,  load average: %s", currentTime, upTime, pkg.GetUsers(), loadMonitor.GetLoad()),
 		fmt.Sprintf("Tasks: [%3d](mod:bold) total, [%3d](mod:bold) running, [%3d](mod:bold) sleeping, [%3d](mod:bold) stopped, [%3d](mod:bold) zombie",
 			tc.Total, tc.Running, tc.Sleeping, tc.Stopped, tc.Zombie),
 		fmt.Sprintf("%%Cpu(s): [%2.1f](mod:bold) us, [%2.1f](mod:bold) sy,  [0.0](mod:bold) ni, [%2.1f](mod:bold) id,  [0.0](mod:bold) wa,  [0.0 hi,](mod:bold)  [0.0](mod:bold) si,  [0.0](mod:bold) st",

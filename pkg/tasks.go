@@ -2,10 +2,11 @@ package pkg
 
 import (
 	"fmt"
-	linuxproc "github.com/c9s/goprocinfo/linux"
 	"os"
 	"strconv"
 	"time"
+
+	linuxproc "github.com/c9s/goprocinfo/linux"
 )
 
 func GetContainerUpTime(stat *linuxproc.Stat) string {
@@ -46,7 +47,7 @@ func GetTaskCount() (c TaskCount) {
 		fmt.Println(err)
 		return
 	}
-	//var total, running, sleeping, stopped, zombie, uninterruptible int
+
 	for _, v := range files {
 		fileName := v.Name()
 		if fileName[0] < '0' || fileName[0] > '9' {

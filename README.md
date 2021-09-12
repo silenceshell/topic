@@ -3,4 +3,12 @@
 top in container.
 
 Running the original `top` command in a container will not get information of the container, many metrics like uptime, users, load average, tasks, cpu, memory, are about the host in fact. 
-`topic`(top in container) will retrieve those metrics from container instead, so it shows the status of the container, not the host.
+`topic`(**top** **i**n **c**ontainer) will retrieve those metrics from container instead, and shows the status of the container, not the host.
+
+## how to use
+
+Just download `topic` from GitHub [release page](https://github.com/silenceshell/topic/releases) to the container which you want to inspect, and add `x` attribute to the binary, then run the binary!
+
+## how to build
+
+Run `make build` for linux and amd64. `topic` only support on linux. If you want to run on other architectures, `GOARCH` is need to be set. 

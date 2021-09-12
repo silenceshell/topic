@@ -26,7 +26,16 @@ func GetContainerUpTime(stat *linuxproc.Stat) string {
 	return uptime.Local().Format("15:04")
 }
 
-func GetTaskCount() (total, running, sleeping, stopped, zombie int) {
+type TaskCount struct {
+	Total           int
+	Running         int
+	Sleeping        int
+	Stopped         int
+	Zombie          int
+	Uninterruptible int
+}
+
+func GetTaskCount() (c TaskCount) {
 	f, err := os.Open("/proc")
 	if err != nil {
 		fmt.Println(err)
@@ -37,7 +46,7 @@ func GetTaskCount() (total, running, sleeping, stopped, zombie int) {
 		fmt.Println(err)
 		return
 	}
-
+	//var total, running, sleeping, stopped, zombie, uninterruptible int
 	for _, v := range files {
 		fileName := v.Name()
 		if fileName[0] < '0' || fileName[0] > '9' {
@@ -51,17 +60,20 @@ func GetTaskCount() (total, running, sleeping, stopped, zombie int) {
 			}
 			switch p.State {
 			case "R":
-				running++
+				c.Running++
+			case "D":
+				c.Uninterruptible++
 			case "t", "T":
-				stopped++
+				c.Stopped++
 			case "Z":
-				zombie++
+				c.Zombie++
 			default:
-				sleeping++
+				c.Sleeping++
 			}
-			total++
+			c.Total++
 		}
 	}
+
 	return
 }
 
@@ -113,7 +125,7 @@ func (t *TaskMonitor) GetTaskInfos() (infos []string) {
 
 			var cpuUsage uint64
 			if t.taskPrevUser[pid] != 0 || t.taskPrevSystem[pid] != 0 {
-				cpuUsage = procInfo.Stat.Utime+procInfo.Stat.Stime - t.taskPrevUser[pid] - t.taskPrevSystem[pid]
+				cpuUsage = procInfo.Stat.Utime + procInfo.Stat.Stime - t.taskPrevUser[pid] - t.taskPrevSystem[pid]
 			}
 			t.taskPrevUser[pid] = procInfo.Stat.Utime
 			t.taskPrevSystem[pid] = procInfo.Stat.Stime
@@ -131,15 +143,15 @@ func (t *TaskMonitor) GetTaskInfos() (infos []string) {
 }
 
 type TaskMonitor struct {
-	stat *linuxproc.Stat
-	taskPrevUser map[int]uint64
+	stat           *linuxproc.Stat
+	taskPrevUser   map[int]uint64
 	taskPrevSystem map[int]uint64
 }
 
 func NewTaskMonitor(stat *linuxproc.Stat) *TaskMonitor {
 	taskMonitor := TaskMonitor{
-		stat: stat,
-		taskPrevUser: make(map[int]uint64),
+		stat:           stat,
+		taskPrevUser:   make(map[int]uint64),
 		taskPrevSystem: make(map[int]uint64),
 	}
 	return &taskMonitor

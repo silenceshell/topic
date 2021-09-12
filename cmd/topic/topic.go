@@ -14,22 +14,25 @@ import (
 const (
 	menuPrint = "  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND"
 )
+
 var (
-	termWidth  = 0
-	termHeight = 0
+	termWidth   = 0
+	termHeight  = 0
+	loadMonitor *pkg.LoadMonitor
 )
 
 func genSummary(stat *linuxproc.Stat) []string {
 	currentTime := time.Now().Local().Format("15:04:05")
 	upTime := pkg.GetContainerUpTime(stat)
-	totalTask, running, sleeping, stopped, zombie := pkg.GetTaskCount()
+	//totalTask, running, sleeping, stopped, zombie, _ := pkg.GetTaskCount()
+	tc := pkg.GetTaskCount()
 	userCpu, systemCpu, idleCpu := pkg.GetCpuUsage()
 	totalMem, freeMem, usedMem, cacheMem := pkg.GetTotalMemInMiB()
 	avail := freeMem + cacheMem
 	return []string{
-		fmt.Sprintf("top - %v up %s,  %d users,  load average: %s", currentTime, upTime, pkg.GetUsers(), pkg.GetLoad()),
+		fmt.Sprintf("top - %v up %s,  %d users,  load average: %s", currentTime, upTime, pkg.GetUsers(), loadMonitor.GetLoad()),
 		fmt.Sprintf("Tasks: [%3d](mod:bold) total, [%3d](mod:bold) running, [%3d](mod:bold) sleeping, [%3d](mod:bold) stopped, [%3d](mod:bold) zombie",
-			totalTask, running, sleeping, stopped, zombie),
+			tc.Total, tc.Running, tc.Sleeping, tc.Stopped, tc.Zombie),
 		fmt.Sprintf("%%Cpu(s): [%2.1f](mod:bold) us, [%2.1f](mod:bold) sy,  [0.0](mod:bold) ni, [%2.1f](mod:bold) id,  [0.0](mod:bold) wa,  [0.0 hi,](mod:bold)  [0.0](mod:bold) si,  [0.0](mod:bold) st",
 			userCpu, systemCpu, idleCpu),
 		fmt.Sprintf("MiB Mem : [%7.1f](mod:bold) total, [%7.1f](mod:bold) free, [%7.1f](mod:bold) used, [%7.1f](mod:bold) buff/cache",
@@ -66,6 +69,9 @@ func main() {
 	termWidth, termHeight = ui.TerminalDimensions()
 
 	taskMonitor := pkg.NewTaskMonitor(stat)
+
+	loadMonitor = pkg.NewLoadMonitor()
+	go loadMonitor.Run()
 
 	summary := widgets.NewList()
 	summary.Rows = genSummary(stat)

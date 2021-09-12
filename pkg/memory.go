@@ -33,9 +33,9 @@ func GetMemInfoInByte() (total, free, used, cache float64) {
 
 func GetTotalMemInMiB() (total, free, used, cache float64) {
 	total, free, used, cache = GetMemInfoInByte()
-	return total/1048576, free/1048576, used/1048576, cache/1048576
+	return total / 1048576, free / 1048576, used / 1048576, cache / 1048576
 }
 func GetTotalMemInKiB() (total, free, used, cache float64) {
 	total, free, used, cache = GetMemInfoInByte()
-	return total/1024, free/1024, used/1024, cache/1024
+	return total / 1024, free / 1024, used / 1024, cache / 1024
 }

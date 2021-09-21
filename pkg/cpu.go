@@ -1,6 +1,9 @@
 package pkg
 
-import linuxproc "github.com/c9s/goprocinfo/linux"
+import (
+	"fmt"
+	linuxproc "github.com/c9s/goprocinfo/linux"
+)
 
 var (
 	prevUser   int64 = 0
@@ -16,6 +19,13 @@ func GetCpuCount(stat *linuxproc.Stat) (count float64) {
 	}
 
 	return float64(cfsPeriod / cfsQuota)
+}
+
+func CpuCountToString(c float64) string {
+	if c == float64(int64(c)) {
+		return fmt.Sprintf("%v", c)
+	}
+	return fmt.Sprintf("%0.1f", c)
 }
 
 // should be called every 1 seconds. not quite precise.

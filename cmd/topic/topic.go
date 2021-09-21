@@ -26,17 +26,17 @@ var (
 func genSummary(stat *linuxproc.Stat) []string {
 	currentTime := time.Now().Local().Format("15:04:05")
 	upTime := pkg.GetContainerUpTime(stat)
-	//totalTask, running, sleeping, stopped, zombie, _ := pkg.GetTaskCount()
 	tc := pkg.GetTaskCount()
 	userCpu, systemCpu, idleCpu := pkg.GetCpuUsage()
+	cpuCount := pkg.GetCpuCount(stat)
 	totalMem, freeMem, usedMem, cacheMem := pkg.GetTotalMemInMiB()
 	avail := freeMem + cacheMem
 	return []string{
 		fmt.Sprintf("topic - %v up %s,  %d users,  load average: %s", currentTime, upTime, pkg.GetUsers(), loadMonitor.GetLoad()),
 		fmt.Sprintf("Tasks: [%3d](mod:bold) total, [%3d](mod:bold) running, [%3d](mod:bold) sleeping, [%3d](mod:bold) stopped, [%3d](mod:bold) zombie",
 			tc.Total, tc.Running, tc.Sleeping, tc.Stopped, tc.Zombie),
-		fmt.Sprintf("%%Cpu(s): [%2.1f](mod:bold) us, [%2.1f](mod:bold) sy,  [0.0](mod:bold) ni, [%2.1f](mod:bold) id,  [0.0](mod:bold) wa,  [0.0 hi,](mod:bold)  [0.0](mod:bold) si,  [0.0](mod:bold) st",
-			userCpu, systemCpu, idleCpu),
+		fmt.Sprintf("%%Cpu(%sc): [%2.1f](mod:bold) us, [%2.1f](mod:bold) sy,  [0.0](mod:bold) ni, [%2.1f](mod:bold) id,  [0.0](mod:bold) wa,  [0.0 hi,](mod:bold)  [0.0](mod:bold) si,  [0.0](mod:bold) st",
+			pkg.CpuCountToString(cpuCount), userCpu, systemCpu, idleCpu),
 		fmt.Sprintf("MiB Mem : [%7.1f](mod:bold) total, [%7.1f](mod:bold) free, [%7.1f](mod:bold) used, [%7.1f](mod:bold) buff/cache",
 			totalMem, freeMem, usedMem, cacheMem),
 		fmt.Sprintf("MiB Swap:       [0](mod:bold) total,       [0](mod:bold) free,       [0](mod:bold) used. [%7.1f](mod:bold) avail Mem", avail),

@@ -103,7 +103,8 @@ func (t *TaskMonitor) GetTaskInfos() (infos []string) {
 		return
 	}
 
-	total, _, _, _ := GetTotalMemInKiB()
+	memInfo := GetTotalMemInKiB()
+	total := memInfo.Total
 
 	taskInfos := make([]string, 0)
 	for _, v := range files {

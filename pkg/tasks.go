@@ -79,7 +79,7 @@ func GetTaskCount() (c TaskCount) {
 }
 
 const (
-	taskInfoFmt = "%5d %-8s%4d%4d%8d %6d %6d %s  %4.1f  %4.1f  %8s %-s"
+	taskInfoFmt = "%5d %-8s%4d%4d%8d %6d %6d %s %5.1f %5.1f  %8s %-s"
 )
 
 func convertDuration(t time.Duration) string {

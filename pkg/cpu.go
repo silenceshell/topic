@@ -14,7 +14,7 @@ func GetCpuCount(stat *linuxproc.Stat) (count float64) {
 	cfsQuota := getCgoupValueByPath("/sys/fs/cgroup/cpu/cpu.cfs_quota_us")
 	cfsPeriod := getCgoupValueByPath("/sys/fs/cgroup/cpu/cpu.cfs_period_us")
 
-	if cfsPeriod == -1 {
+	if cfsQuota == -1 {
 		return float64(len(stat.CPUStats))
 	}
 

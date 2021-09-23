@@ -20,8 +20,7 @@ type LoadMonitor struct {
 }
 
 func (l *LoadMonitor) Run() {
-	ticker := time.NewTicker(5 * time.Second)
-
+	ticker := time.NewTicker(100 * time.Millisecond)
 	for {
 		select {
 		case <-ticker.C:

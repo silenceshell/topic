@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	prevUser   int64 = 0
-	prevSystem int64 = 0
+	prevUsageUser   int64 = 0
+	prevUsageSystem int64 = 0
 )
 
 func GetCpuCount(stat *linuxproc.Stat) (count float64) {
@@ -29,24 +29,26 @@ func CpuCountToString(c float64) string {
 }
 
 // GetCpuUsage should be called every 1 seconds. not quite precise.
-func GetCpuUsage() (user, system, idle float64) {
-	var user_, system_ int64
-	user_ = getCgoupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_user")
-	system_ = getCgoupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_sys")
+func GetCpuUsage(cpus float64) (user, system, idle float64) {
+	var currentUsageUser, currentUsageSystem int64
+	currentUsageUser = getCgoupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_user")
+	currentUsageSystem = getCgoupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_sys")
 
-	if prevUser == 0 && prevSystem == 0 {
-		prevUser = user_
-		prevSystem = system_
+	if prevUsageUser == 0 && prevUsageSystem == 0 {
+		prevUsageUser = currentUsageUser
+		prevUsageSystem = currentUsageSystem
 		return
 	}
 
-	//todo: should divided by count of cpus.
-	user = float64(user_-prevUser) / 10000000       // / 1000,000,000 * 100 = /10,000,000
-	system = float64(system_-prevSystem) / 10000000 // / 1000,000,000 * 100 = /10,000,000
+	user = float64(currentUsageUser-prevUsageUser) / 10000000 / cpus       // / 1000,000,000 * 100 = /10,000,000
+	system = float64(currentUsageSystem-prevUsageSystem) / 10000000 / cpus // / 1000,000,000 * 100 = /10,000,000
 	idle = 100 - user - system
+	if idle < 0 {
+		idle = 0
+	}
 
-	prevUser = user_
-	prevSystem = system_
+	prevUsageUser = currentUsageUser
+	prevUsageSystem = currentUsageSystem
 
 	return
 }

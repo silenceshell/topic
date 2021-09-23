@@ -27,8 +27,8 @@ func genSummary(stat *linuxproc.Stat) []string {
 	currentTime := time.Now().Local().Format("15:04:05")
 	upTime := pkg.GetContainerUpTime(stat)
 	tc := pkg.GetTaskCount()
-	userCpu, systemCpu, idleCpu := pkg.GetCpuUsage()
 	cpuCount := pkg.GetCpuCount(stat)
+	userCpu, systemCpu, idleCpu := pkg.GetCpuUsage(cpuCount)
 	totalMem, freeMem, usedMem, cacheMem := pkg.GetTotalMemInMiB()
 	avail := freeMem + cacheMem
 	return []string{

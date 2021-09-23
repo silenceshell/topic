@@ -18,7 +18,7 @@ func GetCpuCount(stat *linuxproc.Stat) (count float64) {
 		return float64(len(stat.CPUStats))
 	}
 
-	return float64(cfsPeriod / cfsQuota)
+	return float64(cfsQuota / cfsPeriod)
 }
 
 func CpuCountToString(c float64) string {
@@ -28,7 +28,7 @@ func CpuCountToString(c float64) string {
 	return fmt.Sprintf("%0.1f", c)
 }
 
-// should be called every 1 seconds. not quite precise.
+// GetCpuUsage should be called every 1 seconds. not quite precise.
 func GetCpuUsage() (user, system, idle float64) {
 	var user_, system_ int64
 	user_ = getCgoupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_user")

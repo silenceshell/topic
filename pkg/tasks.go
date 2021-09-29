@@ -103,6 +103,8 @@ func (t *TaskMonitor) GetTaskInfos() (infos []string) {
 		return
 	}
 
+	selfPid := os.Getpid()
+
 	memInfo := GetTotalMemInKiB()
 	total := memInfo.Total
 
@@ -138,6 +140,9 @@ func (t *TaskMonitor) GetTaskInfos() (infos []string) {
 			taskInfo := fmt.Sprintf(taskInfoFmt, pid, "root", procInfo.Stat.Priority, procInfo.Stat.Nice,
 				virt, res, shr, procInfo.Stat.State, float64(cpuUsage), memUsage,
 				convertDuration(uptime), procInfo.Cmdline)
+			if selfPid == pid {
+				taskInfo = fmt.Sprintf("[%v](mod:bold)", taskInfo)
+			}
 			taskInfos = append(taskInfos, taskInfo)
 		}
 	}

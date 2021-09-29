@@ -18,7 +18,7 @@ func GetCpuCount(stat *linuxproc.Stat) (count float64) {
 		return float64(len(stat.CPUStats))
 	}
 
-	return float64(cfsQuota / cfsPeriod)
+	return float64(cfsQuota) / float64(cfsPeriod)
 }
 
 func CpuCountToString(c float64) string {

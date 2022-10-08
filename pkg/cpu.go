@@ -11,8 +11,8 @@ var (
 )
 
 func GetCpuCount(stat *linuxproc.Stat) (count float64) {
-	cfsQuota := getCgoupValueByPath("/sys/fs/cgroup/cpu/cpu.cfs_quota_us")
-	cfsPeriod := getCgoupValueByPath("/sys/fs/cgroup/cpu/cpu.cfs_period_us")
+	cfsQuota := getCgroupValueByPath("/sys/fs/cgroup/cpu/cpu.cfs_quota_us")
+	cfsPeriod := getCgroupValueByPath("/sys/fs/cgroup/cpu/cpu.cfs_period_us")
 
 	if cfsQuota == -1 {
 		return float64(len(stat.CPUStats))
@@ -31,8 +31,8 @@ func CpuCountToString(c float64) string {
 // GetCpuUsage should be called every 1 seconds. not quite precise.
 func GetCpuUsage(cpus float64) (user, system, idle float64) {
 	var currentUsageUser, currentUsageSystem int64
-	currentUsageUser = getCgoupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_user")
-	currentUsageSystem = getCgoupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_sys")
+	currentUsageUser = getCgroupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_user")
+	currentUsageSystem = getCgroupValueByPath("/sys/fs/cgroup/cpuacct/cpuacct.usage_sys")
 
 	if prevUsageUser == 0 && prevUsageSystem == 0 {
 		prevUsageUser = currentUsageUser

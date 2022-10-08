@@ -13,6 +13,16 @@ Below shows a container of 2 cpu and 2 Gi running status when stress with `--cpu
 
 Download `topic` from GitHub [release page](https://github.com/silenceshell/topic/releases) to the container which you want to inspect, and add `x` attribute to the binary, then run the binary!
 
+Or just create a container for a try:
+
+```sh
+# start a 2c2g container
+$ docker run -it --name topic --rm --cpus 2 --memory 2g silenceshell/topic bash
+# run topic in this container
+root@04065eeff138:/# topic
+```
+
+
 ## How to build
 
 Run `make build` for linux and amd64. `topic` only support on linux. If you want to run on other architectures, `GOARCH` is need to be set. 

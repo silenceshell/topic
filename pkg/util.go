@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func getCgoupValueByPath(path string) int64 {
+func getCgroupValueByPath(path string) int64 {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return 0
